@@ -22,7 +22,7 @@ public class UserInterface {
         boolean stop = false;
         while (!stop) {
 
-            System.out.println("1) Display all students.");
+            System.out.println("\n1) Display all students.");
             System.out.println("2) Display all teachers.");
             System.out.println("3) Display all classes.");
             System.out.println("4) Display classes of a specific teacher.");
@@ -48,7 +48,7 @@ public class UserInterface {
                     } finally {
                         stop();
                     }
-
+                    break;
                 case 2:
                     init();
                     List<Teacher> teachers = new ArrayList<>();
@@ -59,6 +59,7 @@ public class UserInterface {
                     } finally {
                         stop();
                     }
+                    break;
 
                 case 3:
                     init();
@@ -70,13 +71,22 @@ public class UserInterface {
                     } finally {
                         stop();
                     }
+                    break;
 
                 case 4:
+                    init();
                     System.out.println("\n Enter a teacher ID: ");
                     int teacherID = Integer.parseInt(scan.next());
-                    dbAccess.displayTeacherClasses(teacherID);
-
+                    try {
+                        displayTeacherName(dbAccess.getTeacherName(teacherID));
+                        displayTeacherClasses(dbAccess.getTeacherClasses(teacherID));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        stop();
+                    }
                     break;
+
             }
         }
     }
@@ -98,36 +108,49 @@ public class UserInterface {
     }
 
     static public void displayStudents(List<Student> students) {
-        System.out.printf("%-10s %-20s %-20s %n", "id", "name", "email");
+        System.out.printf("%-10s %-20s %-20s %n", "id", "student_name", "student_email");
         System.out.println("-".repeat(60));
         for (Student std : students) {
             String format = String.format("%n%-10d %-20s %-20s",
                     std.getId(), std.getFullName(), std.getEmail());
             System.out.println(format);
         }
+        System.out.println("*".repeat(80));
     }
 
     static public void displayTeachers(List<Teacher> teachers) {
-        System.out.printf("%-10s %-20s %-20s %n", "id", "name", "email");
+        System.out.printf("%-10s %-20s %-20s %n", "id", "teacher_name", "teacher_email");
         System.out.println("-".repeat(60));
         for (Teacher tch : teachers) {
             String format = String.format("%n%-10d %-20s %-20s",
                     tch.getId(), tch.getFullName(), tch.getEmail());
             System.out.println(format);
         }
+        System.out.println("*".repeat(80));
     }
 
 
     static public void displayClasses (List<Class> classes) {
-        System.out.printf("%-10s %-20s %n", "id", "name");
+        System.out.printf("%-10s %-20s %n", "id", "class_name");
         System.out.println("-".repeat(30));
         for (Class cls : classes) {
             String format = String.format("%n%-10d %-20s",
                     cls.getId(), cls.getName());
             System.out.println(format);
         }
+        System.out.println("*".repeat(80));
     }
 
+    static public void displayTeacherName (String name) {
+        System.out.printf("%nTeacher \"%s\" teaches: %n", name);
+    }
+
+    static public void displayTeacherClasses (List<String> classes) {
+        for (String str: classes) {
+            System.out.println(str);
+        }
+        System.out.println("*".repeat(80));
+    }
 
 
 }

@@ -62,27 +62,9 @@ public class DBAccess {
         return courseList;
     }
 
-    public List<String> getTeacherClasses(int input_id) throws SQLException {
-        List<String> classNames = new ArrayList<>();
-        String sql_classes = "SELECT classes.name FROM ongoing_classes " +
-                "JOIN classes ON ongoing_classes.class_id= classes.id " +
-                "WHERE ongoing_classes.teacher_id = ?";
-
-        PreparedStatement pst = con.prepareStatement(sql_classes);
-        ResultSet rs = pst.executeQuery();
-
-        while (rs.next()) {
-            String name = rs.getString("name");
-            classNames.add(name);
-        }
-
-        pst.close();
-        return classNames;
-    }
-
-    private String getTeacherName (int input_id) throws SQLException{
+    public String getTeacherName (int input_id) throws SQLException{
         String full_name = "No Teacher";
-        String sql_name = "SELECT concat(name, ' ', surname) as full_name FROM teachers WHERE id =?";
+        String sql_name = "SELECT * FROM teachers WHERE id =?";
         PreparedStatement pst = con.prepareStatement(sql_name);
         pst.setInt(1, input_id);
         ResultSet rs= pst.executeQuery();
@@ -94,6 +76,26 @@ public class DBAccess {
         pst.close();
         return full_name;
     }
+
+    public List<String> getTeacherClasses(int input_id) throws SQLException {
+        List<String> classNames = new ArrayList<>();
+        String sql_classes = "SELECT classes.name FROM ongoing_classes " +
+                "JOIN classes ON ongoing_classes.class_id= classes.id " +
+                "WHERE ongoing_classes.teacher_id = ?";
+
+        PreparedStatement pst = con.prepareStatement(sql_classes);
+        pst.setInt(1, input_id);
+        ResultSet rs = pst.executeQuery();
+
+        while (rs.next()) {
+            String name = rs.getString("name");
+            classNames.add(name);
+        }
+
+        pst.close();
+        return classNames;
+    }
+
 
 
     public void displayTeacherClasses (int input_id) {
